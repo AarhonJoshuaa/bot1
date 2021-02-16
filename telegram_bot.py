@@ -2,8 +2,8 @@ import telebot
 import pymongo
 import logging
 from settings import config
-bot = telebot.TeleBot("1632392176:AAGl75a13m0Dk-4dRoKzl0q19jWugAf50eI")
-client = pymongo.MongoClient("mongodb+srv://Aarhon:awsedr@cluster0.pzjtm.mongodb.net/Questions?retryWrites=true&w=majority")
+bot = telebot.TeleBot(config.telegram_key)
+client = pymongo.MongoClient(config.mongodb_key)
 db_name = "Event"
 collection_name = "Questions"
 db = client[db_name][collection_name]
