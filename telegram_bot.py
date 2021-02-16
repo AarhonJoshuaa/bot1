@@ -38,5 +38,4 @@ elif config.ENV == "PROD":
           or   Check the project code <a href ="https://github.com/mdipietro09/Bot_TelegramDatesReminder">here</a>', 200
 
     if __name__ == "__main__":
-        threading.Thread(target=scheduler).start()
         server.run(host=config.host, port=config.port)
