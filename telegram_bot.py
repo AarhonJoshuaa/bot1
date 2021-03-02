@@ -1,6 +1,7 @@
 import telebot
 import pymongo
 import logging
+from telebot import types
 from settings import config
 bot = telebot.TeleBot(config.telegram_key)
 client = pymongo.MongoClient(config.mongodb_key)
@@ -9,20 +10,31 @@ collection_name = "Questions"
 db = client[db_name][collection_name]
 dic_user = {}
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+bot.remove_webhook()
 logger = logging.getLogger(__name__)
 @bot.message_handler(commands=['start'])
 def _start(message):
     msg = "Hello "+str(message.chat.username)+\
           ", I'm a date reminder. Tell me birthdays and events to remind you. To learn how to use me, use \n/help"
     bot.send_message(message.chat.id, msg)
+@bot.message_handler(commands=['hello'])
+def _start1(message):
+    msg = "Hello"
+    bot.send_message(message.chat.id, msg)
+    markup = types.ReplyKeyboardMarkup()
+    itembtna = types.KeyboardButton('error')
+    itembtnv = types.KeyboardButton('infinite loop')
+    itembtnc = types.KeyboardButton('runs fine')
+    itembtnd = types.KeyboardButton('prints 1')
+    markup.row(itembtna, itembtnv)
+    markup.row(itembtnc, itembtnd)
+    bot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
 if config.ENV == "DEV":
     bot.infinity_polling(True)  #bot.polling()
 
 
 elif config.ENV == "PROD":
     import flask
-    import threading
-
     server = flask.Flask(__name__)
 
     @server.route('/'+config.telegram_key, methods=['POST'])
@@ -33,9 +45,8 @@ elif config.ENV == "PROD":
     @server.route("/")
     def webhook():
         bot.remove_webhook()
-        bot.set_webhook(url='https://beat-the-bot.herokuapp.com/'+config.telegram_key)
-        return 'Chat with the Bot  <a href ="https://t.me/DatesReminderBot">here</a> \
-          or   Check the project code <a href ="https://github.com/mdipietro09/Bot_TelegramDatesReminder">here</a>', 200
+       # bot.set_webhook(url='https://beat-the-bot.herokuapp.com/'+config.telegram_key)
+        #return 'Chat with the Bot  <a href ="https://t.me/DatesReminderBot">here</a> \          or   Check the project code <a href ="https://github.com/mdipietro09/Bot_TelegramDatesReminder">here</a>', 200
 
     if __name__ == "__main__":
         server.run(host=config.host, port=config.port)
