@@ -1,5 +1,5 @@
 import os
-ENV = "DEV"  #<--- change here DEV or PROD
+ENV = "PROD"  #<--- change here DEV or PROD
 ## keys
 if ENV == "DEV":
  from settings import keys
